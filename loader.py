@@ -73,7 +73,7 @@ class Vocab_Loader(DataLoader):
             y = self.array[1:, i * self.batch_len: (i + 1) * self.batch_len]
             # print('X shape: ' + str(x.shape))
             # print('Y shape:' + str(y.shape))
-            yield [torch.from_numpy(x), torch.from_numpy(y)]
+            yield [torch.from_numpy(x).long(), torch.from_numpy(y).long()]
 
 
 '''
