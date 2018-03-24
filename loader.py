@@ -62,8 +62,8 @@ class Vocab_Loader(DataLoader):
 
     def __iter__(self):
         if self.shuffle:
-            np.random.shuffle(self.array)
-        self.array = np.hstack(self.array)
+            np.random.shuffle(self.dataset)
+        self.array = np.hstack(self.dataset)
         n = self.array.shape[0] // self.batch_size
         self.array = self.array[:n * self.batch_size]
         self.array = self.array.reshape((n, self.batch_size)).T
