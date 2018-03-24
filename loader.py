@@ -65,11 +65,11 @@ class Vocab_Loader(DataLoader):
         self.array = np.hstack(self.array)
         n = self.array.shape[0] // self.batch_size
         self.array = self.array[:n * self.batch_size]
-        self.array = self.array.reshape((self.batch_size, n)).T
-        nn = self.array.shape[0] // self.batch_len
-        for i in range(nn):
-            x = self.array[i * self.batch_len: (i + 1) * self.batch_len, :-1]
-            y = self.array[i * self.batch_len: (i + 1) * self.batch_len, 1:]
+        self.array = self.array.reshape((n, self.batch_size)).T
+        m = self.array.shape[0] // self.batch_len
+        for i in range(m):
+            x = self.array[:-1, i * self.batch_len: (i + 1) * self.batch_len]
+            y = self.array[1:, i * self.batch_len: (i + 1) * self.batch_len]
             yield (torch.from_numpy(x), torch.from_numpy(y))
 
 
@@ -97,7 +97,7 @@ def main():
     batches = batcher(new_set, args=args)
     pairs = iterator(batches, args=args)
     for each in pairs:
-        print('X shape:' + str(each[0].shape) + ', Y shape: ' + str(each[1].shape))
+        print('X shape:' + str(each[0].size) + ', Y shape: ' + str(each[1].size))
 
 
 if __name__ == '__main__':
