@@ -48,6 +48,18 @@ def iterator(data, args):
         yield TensorDataset(torch.from_numpy(X), torch.from_numpy(Y))
 
 
+def load_train():
+    return np.load('./DeepLearningHW3P1/dataset/wiki.train.npy')
+
+
+def load_valid():
+    return np.load('./DeepLearningHW3P1/dataset/wiki.valid.npy')
+
+
+def load_vocab():
+    return np.load('./DeepLearningHW3P1/dataset/vocab.npy')
+
+
 '''
 def main():
     args = namedtuple('args',
