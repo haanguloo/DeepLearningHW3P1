@@ -70,7 +70,7 @@ class Vocab_Loader(DataLoader):
         for i in range(m):
             x = self.array[:-1, i * self.batch_len: (i + 1) * self.batch_len]
             y = self.array[1:, i * self.batch_len: (i + 1) * self.batch_len]
-            yield (torch.from_numpy(x), torch.from_numpy(y))
+            yield [torch.from_numpy(x), torch.from_numpy(y)]
 
 
 '''
