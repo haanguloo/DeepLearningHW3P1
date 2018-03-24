@@ -24,7 +24,6 @@ print(vocabulary[10])
 batch_size = 3
 '''
 
-
 # Citation: https://raw.githubusercontent.com/cmudeeplearning11785/deep-learning-tutorials/master/recitation-6
 # /shakespeare.py
 
@@ -38,6 +37,7 @@ def iterator(data, args):
         Y = data[i * batch_len: (i + 1) * batch_len, 1:]
         yield (torch.from_numpy(X), torch.from_numpy(Y))
 '''
+
 
 def load_train():
     return np.load('./DeepLearningHW3P1/dataset/wiki.train.npy')
@@ -75,6 +75,8 @@ class Vocab_Loader(DataLoader):
             yield [torch.from_numpy(x), torch.from_numpy(y)]
 
 
+for x, y in Vocab_Loader():
+    print()
 '''
 def main():
     args = namedtuple('args',
