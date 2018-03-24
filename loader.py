@@ -1,6 +1,7 @@
 from collections import namedtuple
 from torch.utils.data import DataLoader
 import numpy as np
+from copy import deepcopy
 import sys
 import torch
 from inferno.extensions.metrics.categorical import CategoricalError
@@ -26,18 +27,8 @@ batch_size = 3
 
 # Citation: https://raw.githubusercontent.com/cmudeeplearning11785/deep-learning-tutorials/master/recitation-6
 # /shakespeare.py
-def batcher(array, args):
-    batch_size = args.batch_size
-    batch_len = array.shape[0] // batch_size
-    array = array[:batch_len * batch_size]
-    return array.reshape((batch_size, batch_len)).T
 
-
-def random_concatenation(corpus):
-    np.random.shuffle(corpus)
-    return np.hstack(corpus)
-
-
+'''
 def iterator(data, args):
     batch_len = args.batch_len
     n = data.shape[0] // batch_len
@@ -45,8 +36,8 @@ def iterator(data, args):
         # yield [data[i * batch_len: (i + 1) * batch_len, :-1], data[i * batch_len: (i + 1) * batch_len, 1:]]
         X = data[i * batch_len: (i + 1) * batch_len, :-1]
         Y = data[i * batch_len: (i + 1) * batch_len, 1:]
-        yield TensorDataset(torch.from_numpy(X), torch.from_numpy(Y))
-
+        yield (torch.from_numpy(X), torch.from_numpy(Y))
+'''
 
 def load_train():
     return np.load('./DeepLearningHW3P1/dataset/wiki.train.npy')
@@ -58,6 +49,28 @@ def load_valid():
 
 def load_vocab():
     return np.load('./DeepLearningHW3P1/dataset/vocab.npy')
+
+
+class Vocab_Loader(DataLoader):
+    def __init__(self, dataset, shuffle, batch_size, batch_len):
+        self.dataset = deepcopy(dataset)
+        self.shuffle = shuffle
+        self.batch_size = batch_size
+        self.batch_len = batch_len
+
+    def __iter__(self):
+        self.array = deepcopy(self.dataset)
+        if self.shuffle:
+            self.array = np.random.shuffle(self.dataset)
+        self.array = np.hstack(self.array)
+        n = self.array.shape[0] // self.batch_size
+        self.array = self.array[:n * self.batch_size]
+        self.array = self.array.reshape((self.batch_size, n)).T
+        nn = self.array.shape[0] // self.batch_len
+        for i in range(nn):
+            x = self.array[i * self.batch_len: (i + 1) * self.batch_len, :-1]
+            y = self.array[i * self.batch_len: (i + 1) * self.batch_len, 1:]
+            yield (torch.from_numpy(x), torch.from_numpy(y))
 
 
 '''
