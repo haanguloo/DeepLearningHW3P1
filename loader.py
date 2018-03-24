@@ -57,27 +57,29 @@ class Vocab_Loader(DataLoader):
         self.shuffle = shuffle
         self.batch_size = batch_size
         self.batch_len = batch_len
+        self.array = deepcopy(self.dataset)
+        print('Cry')
 
     def __iter__(self):
-        self.array = deepcopy(self.dataset)
         if self.shuffle:
-            self.array = np.random.shuffle(self.dataset)
+            np.random.shuffle(self.array)
         self.array = np.hstack(self.array)
         n = self.array.shape[0] // self.batch_size
         self.array = self.array[:n * self.batch_size]
         self.array = self.array.reshape((n, self.batch_size)).T
-        m = self.array.shape[0] // self.batch_len
+        m = self.array.shape[1] // self.batch_len
         for i in range(m):
             x = self.array[:-1, i * self.batch_len: (i + 1) * self.batch_len]
             y = self.array[1:, i * self.batch_len: (i + 1) * self.batch_len]
-            print('X shape: ' + str(x.shape))
-            print('Y shape:' + str(y.shape))
+            # print('X shape: ' + str(x.shape))
+            # print('Y shape:' + str(y.shape))
             yield [torch.from_numpy(x), torch.from_numpy(y)]
 
 
-for x, y in Vocab_Loader():
-    print()
 '''
+training = Vocab_Loader(load_train(), True, 64, 200)
+for x, y in training:
+    print(x.shape)
 def main():
     args = namedtuple('args',
                       [
